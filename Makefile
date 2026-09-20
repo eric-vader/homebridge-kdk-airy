@@ -7,7 +7,7 @@ HOMEBRIDGE := node_modules/homebridge/bin/homebridge.js
 DEV := .dev/node_modules
 UI := $(DEV)/homebridge-config-ui-x
 
-.PHONY: build clean lint test check watch bridge dev publish bump release approve
+.PHONY: build clean lint test check watch bridge dev bump release approve
 
 build: node_modules
 	$(NPM) run build
@@ -50,10 +50,6 @@ $(UI):
 VERSION := $(shell node -p "require('./package.json').version")
 BUMP ?= patch
 
-# First release only: publish from this machine with your npm login and 2FA. Later releases go through `make release`.
-publish: check
-	npm publish --access public
-
 # Bump the version (BUMP=patch, minor or major), commit, tag v<version> and push both.
 bump: check
 	git diff --quiet && git diff --cached --quiet
@@ -61,9 +57,11 @@ bump: check
 	git push --follow-tags
 
 # Create the GitHub release for the current version; the "Publish to npm" workflow then stages it on npm.
+# Notes are generated from the commits; NOTES="text" or NOTES_FILE=path puts your own notes above them.
 release: check
 	git diff --quiet && git diff --cached --quiet
-	gh release create v$(VERSION) --title v$(VERSION) --generate-notes
+	gh release create v$(VERSION) --title v$(VERSION) --generate-notes \
+	  $(if $(NOTES),--notes "$(NOTES)") $(if $(NOTES_FILE),--notes-file "$(NOTES_FILE)")
 
 # Approve the version staged by the workflow, with your npm login and 2FA. Lists the staged versions first.
 # `npm stage` needs a newer npm than Node ships with, so the latest npm is run through npx.
