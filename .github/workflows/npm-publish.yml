@@ -1,0 +1,27 @@
+# Publishes the package when a GitHub release is published, with npm trusted publishing (OpenID Connect): no token is
+# stored. npm only lets a trusted publisher be registered on a package that already exists, so the first release is
+# published by hand; after that, register this repository and workflow file as a trusted publisher of the package
+# on npmjs.com.
+name: Publish to npm
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24.x
+          registry-url: https://registry.npmjs.org
+          package-manager-cache: false
+      - run: npm ci
+      - name: Check that the release tag matches package.json
+        run: test "v$(node -p "require('./package.json').version")" = "$GITHUB_REF_NAME"
+      - run: npm publish --access public

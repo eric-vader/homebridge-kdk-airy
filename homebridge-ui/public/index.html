@@ -1,0 +1,163 @@
+<style>
+  /* The Homebridge UI themes the page with classes on <body> (colour theme plus optional .dark-mode), so the
+     palette is declared here for both modes. The primary button and the focus rings are left to Bootstrap and
+     its --bs-* variables. */
+  #kdk {
+    --k-ground: #ffffff;
+    --k-surface: #f5f4f8;
+    --k-border: #dedbe6;
+    --k-text: #1f1d2b;
+    --k-muted: #6b6880;
+    --k-ok: var(--bs-success, #2e9d5a);
+    --k-warn: var(--bs-warning, #d99a1a);
+    --k-radius: var(--bs-border-radius, 8px);
+    color: var(--k-text); font-size: 0.9375rem; line-height: 1.45; color-scheme: light;
+  }
+  body.dark-mode #kdk {
+    --k-ground: #242424;
+    --k-surface: #2d2d31;
+    --k-border: #3f3f45;
+    --k-text: #f1f0f4;
+    --k-muted: #a6a4b1;
+    color-scheme: dark;
+  }
+  #kdk .form-control, #kdk .form-select {
+    background-color: var(--k-ground); color: var(--k-text); border-color: var(--k-border); font-size: 0.9375rem;
+  }
+  #kdk .form-control::placeholder { color: var(--k-muted); opacity: 0.8; }
+  body.dark-mode #kdk .form-select {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23c9c7d4' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
+  }
+  #kdk .eyebrow {
+    display: block; font-size: 0.72rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--k-muted);
+    margin: 0 0 0.35rem;
+  }
+  #kdk .search { margin-bottom: 1.25rem; }
+  #kdk .search .row-line { display: flex; gap: 0.75rem; align-items: stretch; flex-wrap: wrap; }
+  #kdk .search .row-line .form-control { flex: 1 1 16rem; min-width: 0; }
+  #kdk .search .hint { font-size: 0.8125rem; color: var(--k-muted); margin: 0.4rem 0 0; }
+  #kdk .btn-discover { flex: 0 0 auto; display: inline-flex; align-items: center; gap: 0.45rem; white-space: nowrap; }
+  #kdk .btn-discover svg { width: 1em; height: 1em; }
+  #kdk .btn-discover.busy svg { animation: k-spin 1.1s linear infinite; }
+  @keyframes k-spin { to { transform: rotate(360deg); } }
+  @media (prefers-reduced-motion: reduce) { #kdk .btn-discover.busy svg { animation: none; } }
+
+  #kdk .list-head { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; margin-bottom: 0.35rem; }
+  #kdk .list-head .count { font-size: 0.8125rem; color: var(--k-muted); font-variant-numeric: tabular-nums; }
+  #kdk .fan-list { list-style: none; margin: 0 0 1.25rem; padding: 0; border: 1px solid var(--k-border); border-radius: var(--k-radius); background: var(--k-ground); }
+  #kdk .fan-list > li + li { border-top: 1px solid var(--k-border); }
+  #kdk .fan { display: flex; align-items: center; gap: 0.5rem; padding: 0.85rem 1rem; }
+  #kdk .row-toggle {
+    flex: 1 1 auto; min-width: 0; display: flex; align-items: center; gap: 0.75rem; text-align: left;
+    background: none; border: 0; padding: 0; margin: 0; color: inherit; font: inherit; cursor: pointer;
+  }
+  #kdk .row-toggle:focus-visible { outline: 2px solid var(--bs-primary, #0d6efd); outline-offset: 2px; border-radius: 4px; }
+  #kdk .fan:hover { background: var(--k-surface); }
+  #kdk .fan .who { flex: 1 1 auto; min-width: 0; }
+  #kdk .fan .name { display: block; font-size: 1.0625rem; font-weight: 600; overflow-wrap: anywhere; }
+  #kdk .fan .detail { display: block; font-size: 0.85rem; color: var(--k-muted); margin-top: 0.1rem; font-variant-numeric: tabular-nums; }
+  #kdk .fan .dot { flex: 0 0 auto; width: 0.6rem; height: 0.6rem; border-radius: 50%; background: var(--k-muted); opacity: 0.45; }
+  #kdk .fan .dot.online { background: var(--k-ok); opacity: 1; }
+  #kdk .fan .dot.unknown { background: var(--k-warn); opacity: 1; }
+  #kdk .fan .act {
+    flex: 0 0 auto; display: inline-flex; align-items: center; justify-content: center; width: 2.25rem; height: 2.25rem;
+    padding: 0; border-radius: 6px;
+  }
+  #kdk .fan .act svg { width: 1rem; height: 1rem; }
+  #kdk .fan .slot { visibility: hidden; }
+  #kdk li.open .fan { background: var(--k-surface); }
+  #kdk .panel { padding: 0.25rem 1rem 1rem; background: var(--k-surface); border-top: 1px dashed var(--k-border); }
+  #kdk .panel .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(14rem, 100%), 1fr)); gap: 0.85rem 1rem; }
+  #kdk .panel label { font-size: 0.8125rem; color: var(--k-muted); margin-bottom: 0.25rem; }
+  #kdk .panel .facts { display: grid; grid-template-columns: max-content 1fr; gap: 0.25rem 0.9rem; font-size: 0.8125rem; margin: 0.9rem 0 0; }
+  #kdk .panel .facts dt { color: var(--k-muted); font-weight: 500; margin: 0; }
+  #kdk .panel .facts dd { margin: 0; min-width: 0; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+  #kdk .panel .facts code { font-size: 0.78rem; color: inherit; background: none; padding: 0; word-break: break-all; }
+  #kdk .empty { padding: 1.25rem 1rem; color: var(--k-muted); font-size: 0.9rem; }
+  #kdk .empty strong { color: var(--k-text); font-weight: 600; }
+
+  #kdk details.settings { border: 1px solid var(--k-border); border-radius: var(--k-radius); padding: 0; }
+  #kdk details.settings > summary {
+    list-style: none; cursor: pointer; padding: 0.85rem 1rem; display: flex; align-items: center; gap: 0.6rem; font-weight: 600;
+    color: var(--k-text);
+  }
+  #kdk details.settings > summary::-webkit-details-marker { display: none; }
+  #kdk details.settings > summary svg { width: 0.9rem; height: 0.9rem; transition: transform 0.15s; color: var(--k-muted); }
+  #kdk details.settings[open] > summary svg { transform: rotate(90deg); }
+  #kdk details.settings > summary .sub { font-weight: 400; color: var(--k-muted); font-size: 0.85rem; margin-left: auto; }
+  #kdk details.settings .body { padding: 0.25rem 1rem 1rem; border-top: 1px solid var(--k-border); }
+  #kdk details.settings .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(14rem, 100%), 1fr)); gap: 0.85rem 1rem; }
+  #kdk details.settings label:not(.form-check-label) { font-size: 0.8125rem; color: var(--k-muted); margin-bottom: 0.25rem; }
+  #kdk details.settings .form-check-label { color: var(--k-text); }
+  #kdk details.settings .checks { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 0.5rem 1.5rem; margin-top: 0.25rem; }
+</style>
+
+<div id="kdk">
+  <div class="search">
+    <label class="eyebrow" for="broadcast">Broadcast addresses</label>
+    <div class="row-line">
+      <input id="broadcast" class="form-control" type="text" autocomplete="off" spellcheck="false" placeholder="192.168.1.255, 10.0.0.255">
+      <button id="discover" class="btn btn-primary btn-discover" type="button">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M13.5 8a5.5 5.5 0 1 1-1.6-3.9"/><path d="M13.6 2.5v3.3h-3.3"/></svg>
+        <span>Discover</span>
+      </button>
+    </div>
+    <p class="hint">Where the search is sent. Empty searches every local network. Set this when the fans are on another subnet.</p>
+  </div>
+
+  <div class="list-head">
+    <p class="eyebrow" style="margin:0">Fans</p>
+    <span id="count" class="count" aria-live="polite"></span>
+  </div>
+  <ul id="fans" class="fan-list"></ul>
+
+  <details class="settings" id="settings">
+    <summary>
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3l5 5-5 5"/></svg>
+      Settings
+      <span class="sub">Polling, sounds, defaults for every fan</span>
+    </summary>
+    <div class="body">
+      <div class="grid">
+        <div>
+          <label for="s-refresh">Refresh interval (ms)</label>
+          <input id="s-refresh" class="form-control" type="number" min="1000" max="60000" step="500">
+        </div>
+        <div>
+          <label for="s-gap">Minimum gap between requests (ms)</label>
+          <input id="s-gap" class="form-control" type="number" min="0" max="5000" step="50">
+        </div>
+        <div>
+          <label for="s-sound">Sound on every command</label>
+          <select id="s-sound" class="form-select">
+            <option value="off">Off</option>
+            <option value="beep">Beep (used by the KDK app)</option>
+            <option value="1">Melody 1</option>
+            <option value="2">Melody 2</option>
+            <option value="3">Melody 3</option>
+          </select>
+        </div>
+        <div>
+          <label for="s-swing">Swing Mode controls</label>
+          <select id="s-swing" class="form-select">
+            <option value="off">Nothing (not shown)</option>
+            <option value="yuragi">1/f Yuragi natural wind</option>
+            <option value="reverse">Reverse direction</option>
+          </select>
+        </div>
+        <div class="checks">
+          <div class="form-check">
+            <input id="s-night" class="form-check-input" type="checkbox">
+            <label class="form-check-label" for="s-night">Night switch on fans with a light</label>
+          </div>
+          <div class="form-check">
+            <input id="s-unknown" class="form-check-input" type="checkbox">
+            <label class="form-check-label" for="s-unknown">Accept unknown models</label>
+          </div>
+        </div>
+      </div>
+    </div>
+  </details>
+</div>
+
+<script type="module" src="index.js"></script>

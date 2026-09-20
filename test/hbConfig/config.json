@@ -1,0 +1,50 @@
+{
+    "bridge": {
+        "name": "Homebridge KDK Dev",
+        "username": "0E:2B:7C:55:11:AA",
+        "port": 51826,
+        "pin": "031-45-154"
+    },
+    "platforms": [
+        {
+            "name": "Config",
+            "platform": "config",
+            "port": 8582,
+            "auth": "none",
+            "lightingMode": "auto"
+        },
+        {
+            "platform": "KDKAiry",
+            "name": "KDK Airy",
+            "refresh_interval": 5000,
+            "min_request_interval": 100,
+            "command_sound": "off",
+            "devices": [
+                {
+                    "guid": "3cc4699a56f1e04df90fec8a2b13e17d1310dbfbabd0e04717430e92ae00de9d",
+                    "name": "Fan 10.1.254.0"
+                },
+                {
+                    "guid": "af9152cbbb9099d35a7e5ea024659f957fec319b66ec3bf4f6ba493e36a6461a",
+                    "name": "Fan 10.1.254.1"
+                },
+                {
+                    "guid": "cc0b881c08429c78831f4e73e78427e70fde2ed95f69c0d6ac0eccb834de6971",
+                    "name": "Fan 10.1.254.2"
+                },
+                {
+                    "guid": "233d15ecf4b4bf7aca3e2bb5ec40bc73ef1b24d813e3d4cf5b2c9b7d2e406bf3",
+                    "name": "Fan 10.1.254.3"
+                },
+                {
+                    "guid": "912e8121fb77b93d6d7cb0b5d2efb40a00116b72d8add0d6cdc9bce7f973a68f",
+                    "name": "Fan 10.1.254.4"
+                },
+                {
+                    "guid": "6b4d513da1aec218f9be2d3b66ef0d9e08679d731706c96a883bc6b6637e2d88",
+                    "name": "Fan 10.1.254.5"
+                }
+            ]
+        }
+    ]
+}

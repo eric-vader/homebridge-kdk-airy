@@ -1,0 +1,230 @@
+{
+  "pluginAlias": "KDKAiry",
+  "pluginType": "platform",
+  "singular": true,
+  "headerDisplay": "Controls KDK and Panasonic Wi-Fi ceiling fans over the local network. Fans are found by broadcast when Homebridge starts and again when a fan stops answering. Restart Homebridge after adding a new fan.",
+  "schema": {
+    "type": "object",
+    "properties": {
+      "name": {
+        "title": "Name",
+        "type": "string",
+        "default": "KDK Airy",
+        "required": true
+      },
+      "refresh_interval": {
+        "title": "Refresh interval (ms)",
+        "description": "Time between state polls of each fan.",
+        "type": "integer",
+        "default": 5000,
+        "minimum": 1000,
+        "maximum": 60000
+      },
+      "min_request_interval": {
+        "title": "Minimum gap between requests (ms)",
+        "description": "Minimum time between two requests to the same fan. Applies to polls, commands and the reload after a command. 0 sends the next request as soon as the previous one has finished.",
+        "type": "integer",
+        "default": 100,
+        "minimum": 0,
+        "maximum": 5000
+      },
+      "broadcast_addresses": {
+        "title": "Broadcast addresses",
+        "description": "Where the discovery search is sent, as IPv4 broadcast addresses separated by commas. Empty uses every local interface. Set this when the fans are on another subnet.",
+        "type": "string",
+        "placeholder": "192.168.1.255, 10.0.0.255"
+      },
+      "command_sound": {
+        "title": "Sound on every command",
+        "description": "What the fan plays when it applies a command. The KDK app uses Beep.",
+        "type": "string",
+        "default": "off",
+        "required": true,
+        "oneOf": [
+          {
+            "title": "Off",
+            "enum": [
+              "off"
+            ]
+          },
+          {
+            "title": "Beep",
+            "enum": [
+              "beep"
+            ]
+          },
+          {
+            "title": "Melody 1",
+            "enum": [
+              "1"
+            ]
+          },
+          {
+            "title": "Melody 2",
+            "enum": [
+              "2"
+            ]
+          },
+          {
+            "title": "Melody 3",
+            "enum": [
+              "3"
+            ]
+          }
+        ]
+      },
+      "swing_mode": {
+        "title": "Swing Mode controls",
+        "description": "What the Home app's Oscillate switch on the fan does.",
+        "type": "string",
+        "default": "off",
+        "required": true,
+        "oneOf": [
+          {
+            "title": "1/f Yuragi natural wind",
+            "enum": [
+              "yuragi"
+            ]
+          },
+          {
+            "title": "Reverse direction",
+            "enum": [
+              "reverse"
+            ]
+          },
+          {
+            "title": "Nothing (not shown)",
+            "enum": [
+              "off"
+            ]
+          }
+        ]
+      },
+      "night_mode_switch": {
+        "title": "Expose a Night switch",
+        "description": "Adds a Night switch to each fan with a light. While it is on, the light is in night mode and the Light brightness slider selects the LOW, MEDIUM or HIGH nightlight level.",
+        "type": "boolean",
+        "default": true
+      },
+      "allow_unknown_models": {
+        "title": "Accept unknown models",
+        "description": "Registers fans whose model code is not FM10GC, FM12GC, FM14GC, FM15GC, FM12EC, FM14EC or FM15EC. Such fans are assumed to have a light.",
+        "type": "boolean",
+        "default": false
+      },
+      "devices": {
+        "title": "Fans",
+        "description": "Per-fan settings, matched by HASHGUID. The settings page in the Homebridge UI fills this in; leave a per-fan option empty to use the global setting.",
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "guid": {
+              "title": "HASHGUID",
+              "type": "string",
+              "required": true
+            },
+            "name": {
+              "title": "Name",
+              "type": "string",
+              "placeholder": "Fan <ip address>"
+            },
+            "swing_mode": {
+              "title": "Swing Mode controls (empty: global setting)",
+              "type": "string",
+              "oneOf": [
+                {
+                  "title": "1/f Yuragi natural wind",
+                  "enum": [
+                    "yuragi"
+                  ]
+                },
+                {
+                  "title": "Reverse direction",
+                  "enum": [
+                    "reverse"
+                  ]
+                },
+                {
+                  "title": "Nothing (not shown)",
+                  "enum": [
+                    "off"
+                  ]
+                }
+              ]
+            },
+            "night_mode_switch": {
+              "title": "Night switch (empty: global setting)",
+              "type": "string",
+              "oneOf": [
+                {
+                  "title": "Shown",
+                  "enum": [
+                    "show"
+                  ]
+                },
+                {
+                  "title": "Hidden",
+                  "enum": [
+                    "hide"
+                  ]
+                }
+              ]
+            }
+          }
+        }
+      }
+    }
+  },
+  "layout": [
+    "name",
+    "broadcast_addresses",
+    {
+      "key": "devices",
+      "type": "array",
+      "items": [
+        {
+          "type": "fieldset",
+          "expandable": true,
+          "expanded": false,
+          "title": "{{ value.name || 'Fan ' + value.guid.slice(-4) }}",
+          "items": [
+            "devices[].name",
+            "devices[].guid",
+            "devices[].swing_mode",
+            "devices[].night_mode_switch"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "fieldset",
+      "title": "Polling",
+      "expandable": true,
+      "expanded": false,
+      "items": [
+        {
+          "key": "refresh_interval",
+          "type": "number"
+        },
+        {
+          "key": "min_request_interval",
+          "type": "number"
+        }
+      ]
+    },
+    {
+      "type": "fieldset",
+      "title": "Advanced",
+      "expandable": true,
+      "expanded": false,
+      "items": [
+        "command_sound",
+        "swing_mode",
+        "night_mode_switch",
+        "allow_unknown_models"
+      ]
+    }
+  ],
+  "customUi": true
+}

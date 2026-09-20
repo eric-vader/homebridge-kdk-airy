@@ -1,0 +1,59 @@
+{
+  "name": "homebridge-kdk-airy",
+  "displayName": "KDK Airy Ceiling Fan",
+  "type": "module",
+  "version": "2.0.0",
+  "description": "Homebridge plugin for KDK and Panasonic Wi-Fi ceiling fans. Controls the fans over the local network with the ECHONET Lite protocol used by the KDK Ceiling Fan app.",
+  "license": "GPL-3.0-only",
+  "author": "Han Liang Wee Eric",
+  "homepage": "https://github.com/eric-vader/homebridge-kdk-airy#readme",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/eric-vader/homebridge-kdk-airy.git"
+  },
+  "bugs": {
+    "url": "https://github.com/eric-vader/homebridge-kdk-airy/issues"
+  },
+  "keywords": [
+    "homebridge-plugin",
+    "supports-hap",
+    "kdk",
+    "panasonic",
+    "ceiling-fan",
+    "echonet-lite"
+  ],
+  "main": "dist/index.js",
+  "files": [
+    "dist",
+    "homebridge-ui",
+    "config.schema.json",
+    "docs",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": "^22.22.3 || ^24.0.0 || ^26.0.0",
+    "homebridge": "^2.0.0"
+  },
+  "scripts": {
+    "clean": "node -e \"require('node:fs').rmSync('dist', { recursive: true, force: true })\"",
+    "build": "npm run clean && tsc",
+    "lint": "eslint . --max-warnings=0 && tsc -p tsconfig.test.json",
+    "test": "vitest run",
+    "prepare": "npm run build",
+    "prepublishOnly": "npm run lint && npm test"
+  },
+  "dependencies": {
+    "@homebridge/plugin-ui-utils": "^2.2.6"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@homebridge/hap-nodejs": "^2.2.2",
+    "@types/node": "^22.20.4",
+    "eslint": "^10.11.0",
+    "homebridge": "^2.4.0",
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.70.0",
+    "vitest": "^5.0.1"
+  }
+}
