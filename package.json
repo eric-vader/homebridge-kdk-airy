@@ -2,7 +2,7 @@
   "name": "homebridge-kdk-airy",
   "displayName": "KDK Airy Ceiling Fan",
   "type": "module",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "Homebridge plugin for KDK and Panasonic Wi-Fi ceiling fans. Controls the fans over the local network with the ECHONET Lite protocol used by the KDK Ceiling Fan app.",
   "license": "GPL-3.0-only",
   "author": "Han Liang Wee Eric",
