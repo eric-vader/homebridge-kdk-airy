@@ -9,8 +9,7 @@
       "name": {
         "title": "Name",
         "type": "string",
-        "default": "KDK Airy",
-        "required": true
+        "default": "KDK Airy"
       },
       "refresh_interval": {
         "title": "Refresh interval (ms)",
@@ -32,14 +31,16 @@
         "title": "Broadcast addresses",
         "description": "Where the discovery search is sent, as IPv4 broadcast addresses separated by commas. Empty uses every local interface. Set this when the fans are on another subnet.",
         "type": "string",
-        "placeholder": "192.168.1.255, 10.0.0.255"
+        "placeholder": "192.168.1.255, 10.0.0.255",
+        "examples": [
+          "192.168.1.255"
+        ]
       },
       "command_sound": {
         "title": "Sound on every command",
         "description": "What the fan plays when it applies a command. The KDK app uses Beep.",
         "type": "string",
         "default": "off",
-        "required": true,
         "oneOf": [
           {
             "title": "Off",
@@ -78,7 +79,6 @@
         "description": "What the Home app's Oscillate switch on the fan does.",
         "type": "string",
         "default": "off",
-        "required": true,
         "oneOf": [
           {
             "title": "1/f Yuragi natural wind",
@@ -121,8 +121,7 @@
           "properties": {
             "guid": {
               "title": "HASHGUID",
-              "type": "string",
-              "required": true
+              "type": "string"
             },
             "name": {
               "title": "Name",
@@ -171,10 +170,18 @@
                 }
               ]
             }
-          }
+          },
+          "required": [
+            "guid"
+          ]
         }
       }
-    }
+    },
+    "required": [
+      "name",
+      "command_sound",
+      "swing_mode"
+    ]
   },
   "layout": [
     "name",
