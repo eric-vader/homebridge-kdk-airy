@@ -120,11 +120,12 @@ client. `src/device.ts` is the per-fan state, `src/accessory.ts` the HomeKit map
 Homebridge platform and `homebridge-ui/` the settings page. `test/fake-fan.ts` is a UDP fan simulator used by the
 tests.
 
-Releases are published to npm by the `Publish to npm` workflow when a GitHub release is published. The release tag
-must be `v` followed by the version in `package.json`. The workflow uses npm trusted publishing, which npm only
-allows on a package that already exists, so the first release is published by hand with `npm publish --access
-public`. After that, register the repository and `npm-publish.yml` as a trusted publisher in the package settings
-on npmjs.com.
+Releasing: `make bump` (or `make bump BUMP=minor`) bumps the version, commits, tags and pushes; then `make release`. It creates the GitHub release
+tagged `v` followed by the version, and the `Publish to npm` workflow stages that version on npm using the
+`NPM_TOKEN` repository secret, a "Read and write (stage only)" npm access token. A staged version is not public
+until it is approved with your npm login and 2FA: `make approve` lists the staged versions and approves the one
+you pick. If npm refuses to stage a package that does not exist yet, publish the first release from this machine
+with `make publish`.
 
 ## License
 

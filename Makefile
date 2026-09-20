@@ -7,7 +7,7 @@ HOMEBRIDGE := node_modules/homebridge/bin/homebridge.js
 DEV := .dev/node_modules
 UI := $(DEV)/homebridge-config-ui-x
 
-.PHONY: build clean lint test check watch bridge dev
+.PHONY: build clean lint test check watch bridge dev publish bump release approve
 
 build: node_modules
 	$(NPM) run build
@@ -46,3 +46,27 @@ $(UI):
 	mkdir -p $(DEV)
 	$(NPM) install --prefix .dev --no-save homebridge-config-ui-x@^5
 	ln -sfn ../.. $(DEV)/homebridge-kdk-airy
+
+VERSION := $(shell node -p "require('./package.json').version")
+BUMP ?= patch
+
+# First release only: publish from this machine with your npm login and 2FA. Later releases go through `make release`.
+publish: check
+	npm publish --access public
+
+# Bump the version (BUMP=patch, minor or major), commit, tag v<version> and push both.
+bump: check
+	git diff --quiet && git diff --cached --quiet
+	npm version $(BUMP)
+	git push --follow-tags
+
+# Create the GitHub release for the current version; the "Publish to npm" workflow then stages it on npm.
+release: check
+	git diff --quiet && git diff --cached --quiet
+	gh release create v$(VERSION) --title v$(VERSION) --generate-notes
+
+# Approve the version staged by the workflow, with your npm login and 2FA. Lists the staged versions first.
+# `npm stage` needs a newer npm than Node ships with, so the latest npm is run through npx.
+approve:
+	npx -y npm@latest stage list homebridge-kdk-airy
+	@read -p "stage id to approve: " id && npx -y npm@latest stage approve $$id

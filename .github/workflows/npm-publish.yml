@@ -1,7 +1,6 @@
-# Publishes the package when a GitHub release is published, with npm trusted publishing (OpenID Connect): no token is
-# stored. npm only lets a trusted publisher be registered on a package that already exists, so the first release is
-# published by hand; after that, register this repository and workflow file as a trusted publisher of the package
-# on npmjs.com.
+# Stages the package on npm when a GitHub release is published. Authenticates with the NPM_TOKEN repository secret,
+# an npm granular access token of type "Read and write (stage only)". A staged version is not public until a
+# maintainer approves it with `npm stage approve <stage-id>` and 2FA (see README, Development).
 name: Publish to npm
 
 on:
@@ -21,7 +20,14 @@ jobs:
           node-version: 24.x
           registry-url: https://registry.npmjs.org
           package-manager-cache: false
+      - run: npm install -g npm@latest
       - run: npm ci
       - name: Check that the release tag matches package.json
         run: test "v$(node -p "require('./package.json').version")" = "$GITHUB_REF_NAME"
-      - run: npm publish --access public
+      - run: npm stage publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - name: Show the staged versions waiting for approval
+        run: npm stage list homebridge-kdk-airy
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
